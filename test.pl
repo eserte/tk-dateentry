@@ -22,4 +22,5 @@ $mw->Button(-text => 'OK',
 		$mw->destroy;
 	    })->pack;
 
-MainLoop;
+MainLoop unless $ENV{BATCH};
+
