@@ -1,5 +1,8 @@
 Revision history for Perl extension Tk::DateEntry.
 
+1.33
+	- save grab status
+
 1.32
 	- Use method calls instead of subroutine references in callbacks
 
