@@ -62,8 +62,10 @@ sub Populate {
     $e->bind("<Down>", [$w => 'rotateDay', -1, 1] );
     $e->bind("<Shift-Up>",   [$w => 'rotateDay', +1, 7] );
     $e->bind("<Shift-Down>", [$w => 'rotateDay', -1, 7] );
-    $e->bind("<Control-Up>",   [$w => 'rotateMonth', +1] );
-    $e->bind("<Control-Down>", [$w => 'rotateMonth', -1] );
+    $e->bind("$_",   [$w => 'rotateMonth', +1] )
+	for qw(<Control-Up> <Prior>);
+    $e->bind("$_", [$w => 'rotateMonth', -1] )
+	for qw(<Control-Down> <Next>);
     $e->bind("<Shift-Control-Up>",   [$w => 'rotateYear', +1] );
     $e->bind("<Shift-Control-Down>", [$w => 'rotateYear', -1] );
 
