@@ -408,7 +408,7 @@ sub readContent
     #
     my ($year,$month,$day) = $w->Callback(-parsecmd => $e->get);
     foreach ($year,$month,$day) {
-	unless (m/^\d+$/) {
+	if (defined $_ && !/^\d+$/) {
 	    undef $_;
 	}
     }
