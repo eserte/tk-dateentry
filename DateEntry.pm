@@ -281,18 +281,19 @@ sub buttonDown
 		    # Set the buttons text to $mday, call grid() to make
 		    # sure the button is displayed.
 		    #
-		    my $bckg = $w->cget('-buttonbackground');
+		    my $bckg = $w->cget('-buttonbackground') ||
+			       ($button->configure('-background'))[3];
 
 		    if ($mday == $today_d &&
 			$w->{_month}==$today_m &&
-			$w->{_year}==$today_y)
+			$w->{_year}==$today_y &&
+			$w->cget('-todaybackground'))
 		    {
 			# Special background for TODAY.
 			$bckg = $w->cget('-todaybackground');
 		    }
-		    $button->configure
-			(-text => sprintf ("%2d", $mday),
-			 (defined($bckg) ? ('-background'=>$bckg) :()));
+		    $button->configure(-text => sprintf ("%2d", $mday),
+				       -background => $bckg);
 		    $button->grid
 			(-column=>$wday,-row=>$week+2,-sticky=>'nsew');
 		} else {
@@ -818,8 +819,3 @@ a 32 bit computer it don't support dates after 12/31/2037.
 Tk::Entry
 
 =cut
-
-
-
-
-
