@@ -5,6 +5,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     'NAME'	=> 'Tk::DateEntry',
     'VERSION_FROM' => 'DateEntry.pm', # finds $VERSION
+    'PREREQ_PM' => {Tk => 400},
     'dist'      => {'COMPRESS'=>'gzip -9f', 'SUFFIX' => '.gz',
                     'POSTOP'=>'-$(CHMOD) 644 $(DISTVNAME).tar$(SUFFIX)'},
 );
