@@ -1,5 +1,8 @@
 Revision history for Perl extension Tk::DateEntry.
 
+1.38
+	- new -configcmd option
+
 1.37
 	- warning fix by Dan Rawson
 
