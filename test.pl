@@ -11,8 +11,8 @@ if (!defined $ENV{BATCH}) { $ENV{BATCH} = 1 }
 
 print "ok 1\n";
 
-if ($ENV{LC_ALL} =~ /^de/ ||
-    $ENV{LANG}   =~ /^de/) {
+if ((defined $ENV{LC_ALL} && $ENV{LC_ALL} =~ /^de/) ||
+    (defined $ENV{LANG}   && $ENV{LANG}   =~ /^de/)) {
     @extra_args = (-weekstart => 1,
 		   -daynames => [qw/So Mo Di Mi Do Fr Sa/],
 		   -parsecmd => sub {
@@ -40,6 +40,7 @@ my $de = $mw->DateEntry(-textvariable => \$date,
 			-todaybackground => "green",
 			-arrowimage => $arrowdownwin,
 			@extra_args,
+			-configcmd => \&configcmd,
 		       )->pack(-side=>'left');
 
 if ($ENV{BATCH}) {
@@ -71,3 +72,16 @@ if ($ENV{BATCH}) {
     MainLoop;
 }
 
+sub configcmd {
+    my(%args) = @_;
+    if ($args{-date}) {
+	my($d,$m,$y) = @{ $args{-date} };
+	my $dw = $args{-datewidget};
+	if ($d == 1) {
+	    $dw->configure(-bg => "red", -fg => "white");
+	} else {
+	    $dw->configure(-bg => "grey80", -fg => "black");
+	}
+	#warn "$d $m $y";
+    }
+}
