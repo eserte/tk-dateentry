@@ -1,5 +1,8 @@
 Revision history for Perl extension Tk::DateEntry.
 
+1.32
+	- Use method calls instead of subroutine references in callbacks
+
 1.31
 	- Use FireButton instead of Button if installed.
 	- Fixed -todaybackground bug.
