@@ -12,10 +12,12 @@ print "ok 1\n";
 $mw=new MainWindow;
 
 $mw->Label(-text=>'Select date:')->pack(-side=>'left');
-$mw->DateEntry(-textvariable => \$date)->pack(-side=>'left');
+$mw->DateEntry(-textvariable => \$date,
+	       -todaybackground => "green",
+	      )->pack(-side=>'left');
 
 $mw->Button(-text => 'OK',
-	    -command => sub { 
+	    -command => sub {
 		print "Selected date: $date\n";
 		$mw->destroy;
 	    })->pack;
