@@ -105,6 +105,7 @@ sub Populate {
  	 -variable    => "-textvariable",
          -dateformat  => [qw/PASSIVE dateFormat DateFormat 1/],
 	 -background  => [qw/METHOD background Background/],
+# XXX should the class for these be Background?
 	 -buttonbackground
            	      => [qw/METHOD buttonBackground ButtonBackground/],
 	 -boxbackground
@@ -286,11 +287,11 @@ sub buttonDown
 
 		    if ($mday == $today_d &&
 			$w->{_month}==$today_m &&
-			$w->{_year}==$today_y &&
-			$w->cget('-todaybackground'))
+			$w->{_year}==$today_y)
 		    {
 			# Special background for TODAY.
-			$bckg = $w->cget('-todaybackground');
+			$bckg = $w->cget('-todaybackground') ||
+			        ($button->configure('-background'))[3];
 		    }
 		    $button->configure(-text => sprintf ("%2d", $mday),
 				       -background => $bckg);
