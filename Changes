@@ -1,5 +1,8 @@
 Revision history for Perl extension Tk::DateEntry.
 
+1.36
+	- the grab issue again - removed FocusOut binding
+
 1.35
 	- keyboard shortcuts for inc/decreasing day/month/year
 	  (patch submitted by Diab Jerius)
