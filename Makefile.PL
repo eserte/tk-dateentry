@@ -11,11 +11,17 @@ WriteMakefile(
 );
 
 sub MY::postamble {
+    my $postamble = "";
+
     if (defined $ENV{USER} && $ENV{USER} eq 'eserte') {
-	<<'EOF';
-release :: dist
-	cpan-upload $(DISTVNAME).tar$(SUFFIX)
+	$postamble .= <<'EOF';
+CVS_DIR=${HOME}/work/BikePower
+
+.include "../../perl.release.mk"
+.include "../../perl.cvs.mk"
 
 EOF
     }
+
+    $postamble;
 }
