@@ -1,5 +1,8 @@
 Revision history for Perl extension Tk::DateEntry.
 
+1.37
+	- warning fix by Dan Rawson
+
 1.36
 	- the grab issue again - removed FocusOut binding
 
