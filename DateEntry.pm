@@ -14,7 +14,7 @@ package Tk::DateEntry;
 
 use vars qw($VERSION);
 
-$VERSION = '1.34';
+$VERSION = '1.35';
 
 use Tk;
 use strict;
@@ -504,11 +504,13 @@ sub getCalendar
     my $cal=[];
 
     for my $mday (1..31) {
-	my ($m,$y,$wday) =
+	my ($m,$y,$wday) = eval {
 	    (localtime(timelocal(0,0,0,
 				 $mday,
 				 $w->{_month}-1,
-				 $w->{_year})))[4..6];
+				 $w->{_year})))[4..6]
+	};
+	last if $@;
 	$m++;
 
 	$wday = ($wday - $w->cget('-weekstart')) % 7;
