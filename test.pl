@@ -25,9 +25,18 @@ if ($ENV{LC_ALL} =~ /^de/ ||
 
 $mw=new MainWindow;
 
+$arrowdownwin = $mw->Photo(-data => <<'EOF');
+#define arrowdownwin2_width 9
+#define arrowdownwin2_height 13
+static char arrowdownwin2_bits[] = {
+ 0x00,0xfe,0x00,0xfe,0x00,0xfe,0x00,0xfe,0x00,0xfe,0x7c,0xfe,0x38,0xfe,0x10,
+ 0xfe,0x00,0xfe,0x00,0xfe,0x00,0xfe,0x00,0xfe,0x00,0xfe};
+EOF
+
 $mw->Label(-text=>'Select date:')->pack(-side=>'left');
 $mw->DateEntry(-textvariable => \$date,
 	       -todaybackground => "green",
+	       -arrowimage => $arrowdownwin,
 	       @extra_args,
 	      )->pack(-side=>'left');
 
