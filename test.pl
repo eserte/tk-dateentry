@@ -9,11 +9,26 @@ $loaded = 1;
 
 print "ok 1\n";
 
+if ($ENV{LC_ALL} =~ /^de/ ||
+    $ENV{LANG}   =~ /^de/) {
+    @extra_args = (-weekstart => 1,
+		   -daynames => [qw/So Mo Di Mi Do Fr Sa/],
+		   -parsecmd => sub {
+		       my($d,$m,$y) = ($_[0] =~ m/(\d*)\.(\d*)\.(\d*)/);
+		       return ($y,$m,$d);
+		   },
+		   -formatcmd => sub {
+		       sprintf ("%02d.%02d.%04d",$_[2],$_[1],$_[0]);
+		   },
+		  );
+}
+
 $mw=new MainWindow;
 
 $mw->Label(-text=>'Select date:')->pack(-side=>'left');
 $mw->DateEntry(-textvariable => \$date,
 	       -todaybackground => "green",
+	       @extra_args,
 	      )->pack(-side=>'left');
 
 $mw->Button(-text => 'OK',
