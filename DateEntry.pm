@@ -58,17 +58,10 @@ sub Populate {
     $b->bind("<space>", [ $w => 'buttonDown' ]);
     $b->bind("<Key-Return>", [ $w => 'buttonDown' ]);
     $e->bind("<Key-Return>", [ $w => 'buttonDown' ]);
-#XXX sigh
-#    $w->bind("<FocusOut>", sub { return if $w->grabCurrent eq $w; warn $w->focusCurrent,"\n";return if defined $w->focusCurrent && $tl eq $w->focusCurrent; my $e = shift->XEvent;warn "focusout " . $e->d . " " . $e->m . "\n";$w->popDown });
-#    $w->bind("<FocusOut>", [ $w => 'popDown' ]);
-#    $w->bind("<FocusOut>", sub { warn $w->focusCurrent,"\n";return if defined $w->focusCurrent && $tl eq $w->focusCurrent; my $e = shift->XEvent;warn "focusout " . $e->d . " " . $e->m . "\n";$w->popDown });
     $w->bind("<FocusOut>", sub { my $e = shift->XEvent;
 				 my $wout = sub { if (UNIVERSAL::isa($_[0],"Tk::Label")) { $_[0]->cget(-text) } else { $_[0] } };
-				 warn "focusout " . $e->d . " " . $e->m . "\n";
-				 warn "focusc=".$wout->($w->focusCurrent).", grabc=".$wout->($w->grabCurrent)."\n";
 				 $w->popDown;
 			     });
-#    $tl->bind("<FocusOut>", [ $w => 'popDown' ]);
 
     # Create the buttons on the dropdown.
     my $fr = $w->{_frame} = $tl->Frame->pack(-anchor=>'n');
