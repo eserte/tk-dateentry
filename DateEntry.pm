@@ -14,7 +14,7 @@ package Tk::DateEntry;
 
 use vars qw($VERSION);
 
-$VERSION = '1.35';
+$VERSION = '1.34';
 
 use Tk;
 use strict;
