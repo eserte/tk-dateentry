@@ -708,7 +708,7 @@ Increase or decrease the date by one day.
 
 Increase or decrease the date by one week.
 
-=item <Control-Up>, <Control-Down>
+=item <Control-Up> or <Prior>, <Control-Down> or <Next>
 
 Increase or decrease the date by one month.
 
