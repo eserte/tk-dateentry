@@ -3,7 +3,7 @@
 #
 # Author: Hans J. Helgesen, October 1999.
 #
-# Maintainer is now Slaven Rezic <slaven.rezic@berlin.de>
+# Maintainer is now Slaven Rezic <slaven@rezic.de>
 #
 # To contact the original author:
 # <hans.helgesen@novit.no>
@@ -14,7 +14,7 @@ package Tk::DateEntry;
 
 use vars qw($VERSION);
 
-$VERSION = '1.35';
+$VERSION = '1.36';
 
 use Tk;
 use strict;
@@ -69,10 +69,8 @@ sub Populate {
     $e->bind("<Shift-Control-Up>",   [$w => 'rotateYear', +1] );
     $e->bind("<Shift-Control-Down>", [$w => 'rotateYear', -1] );
 
-    $w->bind("<FocusOut>", sub { my $e = shift->XEvent;
-				 my $wout = sub { if (UNIVERSAL::isa($_[0],"Tk::Label")) { $_[0]->cget(-text) } else { $_[0] } };
-				 $w->popDown;
-			     });
+    # XXX Not uses anymore due to problems with grab
+    #$w->bind("<FocusOut>", sub { $w->popDown });
 
     # Create the buttons on the dropdown.
     my $fr = $w->{_frame} = $tl->Frame->pack(-anchor=>'n');
@@ -268,7 +266,7 @@ sub buttonDown
     # Popup the widget.
     $w->popUp;
 
-    $w->{_oldgrab} = $w->grabSave;
+    $w->{_oldgrab} = $w->toplevel->grabSave;
     $w->grabGlobal;               # Start processing......
 
     $w->readContent;             # Tries to read the current content of
@@ -515,6 +513,7 @@ sub getCalendar
 
     for my $mday (1..31) {
 	my ($m,$y,$wday) = eval {
+	    local $SIG{'__DIE__'};
 	    (localtime(timelocal(0,0,0,
 				 $mday,
 				 $w->{_month}-1,
@@ -651,6 +650,7 @@ sub updateDate
   my ($w) = @_;
 
   my ($d,$m,$y) = eval {
+    local $SIG{__DIE__} = undef;
     (localtime(timelocal(0,0,0,
 			 $w->{_day},
 			 $w->{_month}-1,
@@ -710,11 +710,14 @@ Increase or decrease the date by one week.
 
 =item <Control-Up> or <Prior>, <Control-Down> or <Next>
 
-Increase or decrease the date by one month.
+Increase or decrease the date by one month. This would not work if the
+next or previous month has less days then the day currently selected.
 
 =item <Shift-Control-Up>, <Shift-Control-Down>
 
-Increase or decrease the date by one year.
+Increase or decrease the date by one year. This would not work if the
+same month in the next or previous year has less days then the day
+currently selected.
 
 =back
 
@@ -922,8 +925,8 @@ Tk::DateEntry uses timelocal(), localtime() and strftime().
 These functions are based on the standard unix time representation, which
 is the number of seconds since 1/1/1970.
 
-This means that Tk::DateEntry don't support dates prior to 1970, and on
-a 32 bit computer it don't support dates after 12/31/2037.
+This means that Tk::DateEntry doesn't support dates prior to 1970, and on
+a 32 bit computer it doesn't support dates after 12/31/2037.
 
 =head1 SEE ALSO
 
