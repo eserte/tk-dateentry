@@ -14,7 +14,7 @@ package Tk::DateEntry;
 
 use vars qw($VERSION);
 
-$VERSION = '1.37';
+$VERSION = '1.38';
 
 use Tk;
 use strict;
@@ -134,6 +134,7 @@ sub Populate {
 			  ['defaultFormat',$w]],
 	 -parsecmd    => [qw/CALLBACK parseCmd ParseCmd/,
 			  ['defaultParse', $w]],
+	 -configcmd   => [qw/CALLBACK configCmd ConfigCmd/, undef],
 	 -headingfmt  => [qw/PASSIVE headingFmt HeadingFmt/, '%B %Y'],
 	 -state       => [qw/METHOD state State normal/],
 	 -width       => [$e, undef, undef, 10],
@@ -274,6 +275,8 @@ sub buttonDown
 
     $w->{_status} = '';
 
+    my $configcmd = $w->cget('-configcmd');
+
     my ($today_d,$today_m,$today_y) = (localtime)[3,4,5];
     $today_m++;
     $today_y+=1900;
@@ -321,6 +324,16 @@ sub buttonDown
 		    # the button.
 		    #
 		    $button->gridForget;
+		}
+
+		if ($configcmd) {
+		    $configcmd->Call((defined $mday
+				      ? (-date => [$mday, $w->{_month}, $w->{_year}])
+				      : ()
+				     ),
+				     -datewidget => $button,
+				     -widget => $w,
+				    );
 		}
 	    }
 	}
@@ -758,7 +771,7 @@ See also "DATE FORMATS" below.
 
 =item -parsecmd => \&callback
 
-In stead of using one of the builtin dateformats, you can specify your
+Instead of using one of the builtin dateformats, you can specify your
 own by supplying a subroutine for parsing (-parsecmd) and formatting
 (-formatcmd) of the date string. These options overrides -dateformat.
 See "DATE FORMATS" below.
@@ -788,6 +801,30 @@ Sets the background color for the button representing the current date.
 =item -font => font
 
 Sets the font for all subwidgets.
+
+=item -configcmd => \&callback
+
+Called for every day button in the calendar while month configuration.
+A hash with the keys B<-date>, B<-widget>, and B<-datewidget> is
+passed to the callback. The -date parameter is an array reference
+containing day, month, and year. For empty buttons this parameter is
+undefined. The -widget parameter is a reference to the current
+Tk::DateEntry widget, and the -datewidget parameter is a reference to
+the current day button. A sample callback:
+
+    sub configcmd {
+       my(%args) = @_;
+       my($day,$month,$year) = @{ $args{-date} };
+       my $widget = $args->{-widget};
+       my $datewidget = $args->{-datewidget};
+       $datewidget->configure(...);
+       ...
+    }
+
+The callback is called after initial configuration of a day widget,
+that is, i.e. the label and the background color is already set. Note
+that day buttons XXX beibehalten XXX their configuration while
+switching between months.
 
 =item -daynames => [qw/Sun Mon Tue Wed Thu Fri Sat/]
 
@@ -887,7 +924,7 @@ See "EXAMPLES" below.
 
 =head2 The simplest way:
 
-	$parent-&>DateEntry-&>pack;
+	$parent->DateEntry->pack;
 
 =head2 Other daynames:
 
@@ -930,6 +967,6 @@ a 32 bit computer it doesn't support dates after 12/31/2037.
 
 =head1 SEE ALSO
 
-Tk::Entry
+L<Tk::Entry>, L<Tk::Button>.
 
 =cut
