@@ -1,4 +1,7 @@
 # -*- perl -*-
+
+use 5.005; # new "for" syntax
+
 use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
@@ -13,9 +16,8 @@ WriteMakefile(
 sub MY::postamble {
     my $postamble = "";
 
-    if (defined $ENV{USER} && $ENV{USER} eq 'eserte') {
+    if (defined $ENV{USER} && $ENV{USER} eq 'eserte' && $^O =~ /bsd/i && -f "../../perl.release.mk") {
 	$postamble .= <<'EOF';
-CVS_DIR=${HOME}/work/BikePower
 
 .include "../../perl.release.mk"
 .include "../../perl.cvs.mk"
