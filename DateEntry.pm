@@ -1,14 +1,12 @@
 #
 # DateEntry lets the user select a date from a drop-down calendar.
-# 
+#
 # Author: Hans J. Helgesen, October 1999.
 #
-# Before March 2000:
+# Maintainer is now Slaven Rezic <slaven.rezic@berlin.de>
 #
-# Please send comments, suggestions and error reports to 
-# hans_helgesen@hotmail.com.
-#
-# From March 2000: hans.helgesen@novit.no
+# To contact the original author:
+# <hans.helgesen@novit.no>
 #
 # See end of this file for documentation.
 #
@@ -16,12 +14,7 @@ package Tk::DateEntry;
 
 use vars qw($VERSION);
 
-# Change history:
-# 1.1 - Some changes due to suggestions from somebody on the net.
-# 1.2 - POD doc, several internal improvements.
-# 1.3 - Fixed the -background bug.
-#       Added some key bindings.
-$VERSION = '1.3'; 
+$VERSION = '1.31';
 
 use Tk;
 use strict;
@@ -47,13 +40,13 @@ sub Populate {
     my $e = $w->Entry;
     my $b = $w->Button(-bitmap => '@' . Tk->findINC("cbxarrow.xbm"));
     my $tl = $w->{_toplevel} = $w->Toplevel(-bd=>2,-relief=>'raised');
-    
+
     $w->Advertise("entry" => $e);
     $w->Advertise("arrow" => $b);
-    
+
     $tl->transient($w);
-    $tl->overrideredirect(1);    
-    
+    $tl->overrideredirect(1);
+
     $b->pack(-side => "right", -padx => 0);
     $e->pack(-side => "right", -fill => 'x', -expand => 1, -padx => 0);
 
@@ -63,28 +56,31 @@ sub Populate {
     $b->bind("<Key-Return>", [ $w => 'buttonDown' ]);
     $e->bind("<Key-Return>", [ $w => 'buttonDown' ]);
     $w->bind("<FocusOut>", [ $w => 'popDown' ]);
-    
-    # Create the buttons on the dropdown. 
+
+    # Create the buttons on the dropdown.
     my $fr = $w->{_frame} = $tl->Frame->pack(-anchor=>'n');
 
+    # check whether Tk::FireButton is installed
+    my $Button = eval { require Tk::FireButton; 1 } ? 'FireButton' : 'Button';
+
     # 1. Previous month:
-    $w->{_backbutton}=$fr->Button(-text=>'<<',-pady=>1,-padx=>1,-bd=>1,
-				  -command=> [\&prevMonth, $w])
+    $w->{_backbutton}=$fr->$Button(-text=>'<<',-pady=>1,-padx=>1,-bd=>1,
+				   -command=> [\&prevMonth, $w])
 	->grid(-row=>0,-column=>0);
-    
+
     # 2. Label to put the monthname in:
     $w->{_monthlabel} = $fr->Label->grid(-row=>0,-column=>1,-columnspan=>5);
-    
+
     # 3. Next month:
-    $w->{_nextbutton}=$fr->Button(-text=>'>>',-pady=>1,-padx=>1,-bd=>1,
-				  -command=>[\&nextMonth, $w])
+    $w->{_nextbutton}=$fr->$Button(-text=>'>>',-pady=>1,-padx=>1,-bd=>1,
+				   -command=>[\&nextMonth, $w])
 	->grid(-row=>0,-column=>6);
-    
+
     # 4. Dayname labels:
     for (0..6) {
 	$w->{_daylabel}->[$_] = $fr->Label->grid(-column=>$_,-row=>1);
     }
-    
+
     # 5. Daybuttons. Note that we create button for six weeks, since it
     #    is possible that a month might span over six different weeks.
     #    The text on the buttons are just a dummy to force them to the
@@ -101,19 +97,19 @@ sub Populate {
     $tl->withdraw;
 
     $w->{_popped} = 0;
-    
+
     $w->Delegates(DEFAULT => $e);
-    
+
     $w->ConfigSpecs
 	(-arrowimage  => [{-image => $b}, qw/arrowImage ArrowImage/],
  	 -variable    => "-textvariable",
          -dateformat  => [qw/PASSIVE dateFormat DateFormat 1/],
 	 -background  => [qw/METHOD background Background/],
-	 -buttonbackground 
+	 -buttonbackground
            	      => [qw/METHOD buttonBackground ButtonBackground/],
-	 -boxbackground 
+	 -boxbackground
                       => [qw/METHOD boxBackground BoxBackground/],
-	 -todaybackground  
+	 -todaybackground
                       => [qw/PASSIVE todayBackground TodayBackground/],
 	 -font        => [qw/DESCENDANTS font Font/],
 	 -daynames    => [qw/PASSIVE daynames Daynames/,[qw/S M Tu W Th F S/]],
@@ -135,19 +131,19 @@ sub Populate {
 # and 'disabled', 'readonly' forces the user to select from the dropdown.
 sub state {
     my $w = shift;
-    
+
     unless (@_) {
         return ($w->{'de_state'});
     } else {
         my $state = $w->{'de_state'} = shift;
-	
+
 	if ($state eq "readonly" ) {
 	    $w->Subwidget("entry")->configure( -state => "disabled" );
 	    $w->Subwidget("arrow")->configure( -state => "normal" );
 	} else {
 	    $w->Subwidget("entry")->configure( -state => $state );
 	    $w->Subwidget("arrow")->configure( -state => $state );
-	}        
+	}
     }
 }
 
@@ -156,12 +152,12 @@ sub state {
 sub background
 {
     my $w = shift;
-    
+
     unless (@_) {
         return ($w->{'de_background'});
     } else {
         my $color = $w->{'de_background'} = shift;
-	
+
 	foreach (qw/entry arrow/) {
 	    $w->Subwidget($_)->configure(-background=>$color);
 	}
@@ -173,12 +169,12 @@ sub background
 sub buttonbackground
 {
     my $w = shift;
-    
+
     unless (@_) {
         return ($w->{'de_buttonbackground'});
     } else {
         my $color = $w->{'de_buttonbackground'} = shift;
-	
+
 	foreach (qw/_backbutton _nextbutton/) {
 	    $w->{$_}->configure('-background'=>$color);
 	}
@@ -188,7 +184,7 @@ sub buttonbackground
 sub boxbackground
 {
     my $w = shift;
-    
+
     unless (@_) {
         return ($w->{'de_boxbackground'});
     } else {
@@ -220,23 +216,23 @@ sub configure
 	carp ("-dateformat must be between 1 and 3");
 	delete $args{-dateformat};  # Ignore -dateformat
     }
-    
-    
+
+
     $w->SUPER::configure(%args);
-    
+
     if (defined($args{-daynames}) || defined($args{-weekstart})) {
 	# Refresh the daynames heading whenever -daynames or -weekstart
 	# changes.
 	my $daynames = $w->cget('-daynames');
 	my $weekstart = $w->cget('-weekstart');
-	
-	for (0..6) {    
+
+	for (0..6) {
 	    $w->{_daylabel}->[$_]->configure
-		(-text => $daynames->[($_ + $weekstart)%7]);	
+		(-text => $daynames->[($_ + $weekstart)%7]);
 	}
     }
 }
-    
+
 #---------------------------------------------------------------------------
 # Whenever someone pushes the arrow.....
 
@@ -244,23 +240,23 @@ sub buttonDown
 {
     my ($w) = @_;
     my $tl = $w->{_toplevel};
-    
+
     return if $w->cget('-state') eq 'disabled';
 
     if ($w->{_popped}) {         # If already visible, pop down.
 	return $w->popDown;
     }
-    
-    # Popup the widget. 
+
+    # Popup the widget.
     $w->popUp;
 
     $w->grabGlobal;               # Start processing......
-    
-    $w->readContent;             # Tries to read the current content of 
+
+    $w->readContent;             # Tries to read the current content of
                                   # entry, set default if empty.
-    
+
     $w->{_status} = '';
-    
+
     my ($today_d,$today_m,$today_y) = (localtime)[3,4,5];
     $today_m++;
     $today_y+=1900;
@@ -271,16 +267,16 @@ sub buttonDown
 	# an element has a value, the value is the day number of the month.
 	#
 	my $cal = $w->getCalendar;
-	
+
 	$w->{_monthlabel}->configure
 	    (-text=>strftime($w->cget('-headingfmt'),0,0,0,1,
 			     $w->{_month}-1,$w->{_year}-1900));
-	
+
 	for my $week (0..5) {
 	    for my $wday (0..6) {
 		my $button = $w->{_daybutton}->[$week]->[$wday];
 		my $mday = $cal->[$week]->[$wday];
-		
+
 		if (defined($mday)) {
 		    # Set the buttons text to $mday, call grid() to make
 		    # sure the button is displayed.
@@ -288,8 +284,8 @@ sub buttonDown
 		    my $bckg = $w->cget('-buttonbackground');
 
 		    if ($mday == $today_d &&
-			$w->{_month}==$today_m && 
-			$w->{_year}==$today_y) 
+			$w->{_month}==$today_m &&
+			$w->{_year}==$today_y)
 		    {
 			# Special background for TODAY.
 			$bckg = $w->cget('-todaybackground');
@@ -311,7 +307,7 @@ sub buttonDown
 	# Wait for something to happen...
 	$w->waitVariable(\$w->{_status});
     }
-    
+
     $w->popDown;
 }
 
@@ -325,7 +321,7 @@ sub popUp
     my $e = $w->Subwidget("entry");
     my $tl = $w->{_toplevel};
     my ($x, $y);
-    
+
     # When the dislayed month changes, the number of weeks displayed might
     # change (minimum four, maximum six). To keep the size of the window
     # constant, we'll first put a dummy-button in each row, then "freeze"
@@ -340,7 +336,7 @@ sub popUp
                                    # is still withdrawn, the user won't see
                                    # anything.
     $tl->packPropagate(0);         # Freeze....
-    
+
 
     my ($th,$tw) = ($tl->reqheight, $tl->reqwidth);
     my ($ex,$ey) = ($e->rootx, $e->rooty);
@@ -358,7 +354,7 @@ sub popUp
     if ($y < 1) {
 	$y = 1;
     }
-		    
+
     # Horizontal, best position is directly below/above the entry.
     if ($ex + $tw < $rw) {
 	$x = $ex;
@@ -369,13 +365,13 @@ sub popUp
 	$x = 1;
     }
     $tl->geometry(sprintf("+%d+%d",$x,$y));
-    
+
     $tl->deiconify;
     $tl->raise;
 
-    $w->Subwidget("entry")->focus;	
+    $w->Subwidget("entry")->focus;
     $w->{_popped} = 1;
-}    
+}
 
 #----------------------------------------------------------------------
 # Reads the current content of the widget and parses it to retrieve the
@@ -404,16 +400,16 @@ sub readContent
     unless (defined($month) && $month >= 1 && $month <= 12) {
 	$month = $today_m;
     }
-    
+
     $year = $today_y unless defined($year);
     if ($year < 100) {
 	# One or two digit year. Try to find a reasonable value for
 	# century by using a "100 years window".
 	my $cc = int($today_y / 100); # Try current century
 	my $yyyy = sprintf "%02d%02d", $cc, $year;
-	
-	if ($yyyy > ($today_y + 50)) { 
-	    $yyyy -= 100;  # More than 50 years in the future, must be 
+
+	if ($yyyy > ($today_y + 50)) {
+	    $yyyy -= 100;  # More than 50 years in the future, must be
 	                   # prev. century
 	} elsif ($yyyy < ($today_y - 50)) {
 	    $yyyy += 100;  # More that 50 years ago, must be next cent.
@@ -423,7 +419,7 @@ sub readContent
     unless ($year =~ m/^\d+$/) {
 	$year = $today_y;
     }
-    
+
     $w->{_month} = $month;
     $w->{_year} = $year;
 }
@@ -435,17 +431,17 @@ sub readContent
 sub defaultParse
 {
     my ($w, $str) = @_;
-    
+
     my ($m,$d,$y);
-    
+
     $_ = $w->cget('-dateformat');
-    
+
     $str =~ s/\s//g;
 
     /^1$/ && (($m,$d,$y) = (split '/', $str));
     /^2$/ && (($y,$m,$d) = (split '/', $str));
     /^3$/ && (($d,$m,$y) = (split '/', $str));
-    
+
     return ($y,$m,$d);
 }
 
@@ -454,9 +450,9 @@ sub defaultParse
 # (rememember to update check in configure() if more dateformats are
 # added).
 sub defaultFormat
-{   
+{
     my ($w, $y, $m, $d) = @_;
-    
+
     $_=$w->cget('-dateformat');
     if (/^1$/) {
 	sprintf("%02d/%02d/%04d", $m, $d, $y);
@@ -470,7 +466,7 @@ sub defaultFormat
 #-----------------------------------------------------------------------
 # Returns a calendar for the month given by $w->{_month} and {_year}.
 # The calendar is returned as a 6 * 7 two-dimensional array. Each row in the
-# array represents a week, each column a weekday. 
+# array represents a week, each column a weekday.
 #
 # EXAMPLE: October 1999 (assume -weekstart => 0):
 #
@@ -484,15 +480,15 @@ sub defaultFormat
 sub getCalendar
 {
     my ($w) = @_;
-    
+
     use Time::Local;
     use POSIX(qw(strftime));
 
     my $week=0;
     my $cal=[];
-    
+
     for my $mday (1..31) {
-	my ($m,$y,$wday) = 
+	my ($m,$y,$wday) =
 	    (localtime(timelocal(0,0,0,
 				 $mday,
 				 $w->{_month}-1,
@@ -507,7 +503,7 @@ sub getCalendar
 	    }
 	}
     }
-    
+
     return $cal;
 }
 
@@ -540,20 +536,20 @@ sub selectDay
 
     my $e = $w->Subwidget("entry");
     my $mday = $w->{_daybutton}->[$week]->[$wday]->cget('-text');
-    
+
     if ($w->cget('-state') eq 'readonly') {
 	$e->configure('-state'=>'normal');
     }
     $e->delete('0','end');
-    $e->insert('end', 
+    $e->insert('end',
 	       $w->Callback(-formatcmd=>$w->{_year},$w->{_month}, $mday));
 
     if ($w->cget('-state') eq 'readonly') {
 	$e->configure('-state'=>'disabled');
     }
-    
+
     $w->popDown;
-    
+
 }
 
 # Increment month number (or year)
@@ -582,7 +578,7 @@ sub prevMonth
 	$w->{_month}--;
     }
     $w->{_status} = 'new';
-}	
+}
 
 1;
 
@@ -601,21 +597,21 @@ $dateentry = $parent->DateEntry (<options>);
 =head1 DESCRIPTION
 
 Tk::DateEntry is a drop down widget for selecting dates. It looks like
-the BrowseEntry widget with an Entry followed by an arrow button, but 
-in stead of displaying a Listbox the DateEntry displays a calendar 
-with buttons for each date. The calendar contains buttons for browsing 
+the BrowseEntry widget with an Entry followed by an arrow button, but
+in stead of displaying a Listbox the DateEntry displays a calendar
+with buttons for each date. The calendar contains buttons for browsing
 through the months.
 
 When the drop down is opened, the widget will try to read the current
 content of the widget (the -textvariable), and display the month/year
-specified. If the variable is entry, or contains invalid data, the 
-current month is displayed. If one or two digit year is specified, 
-the widget tries to guess the correct century by using a "100 year 
+specified. If the variable is entry, or contains invalid data, the
+current month is displayed. If one or two digit year is specified,
+the widget tries to guess the correct century by using a "100 year
 window".
 
 =head1 REQUIREMENTS
 
-Tk::DateEntry requires Time::Local and POSIX (strftime) 
+Tk::DateEntry requires Time::Local and POSIX (strftime)
 (and basic Perl/Tk of course....)
 
 =head1 OPTIONS
@@ -707,18 +703,18 @@ the drop down, editing in the Entry subwidget is disabled.
 
 =item -width => number
 
-Width of the Entry subwidget, default is 10 (which fits the default 
+Width of the Entry subwidget, default is 10 (which fits the default
 date format MM/DD/YYYY).
 
 All other options are handled by the Entry subwidget.
 
-=back 
+=back
 
 =head1 DATE FORMATS
 
 The default date format is MM/DD/YYYY. Since Tk::DateEntry has to parse the
 date to decide which month to display, you can't specify strftime formats
-directly (like "-dateformat => 'Date: %D. %B'"). 
+directly (like "-dateformat => 'Date: %D. %B'").
 
 The "builtin" date formats are:
 
@@ -734,7 +730,7 @@ The "builtin" date formats are:
 
 =item
 
--dateformat => 3       - DD/MM/YYYY 
+-dateformat => 3       - DD/MM/YYYY
 
 =back
 
@@ -745,8 +741,8 @@ using a "100 year window".
 If you're not satisified with any of these formats, you might specify your
 own parse- and format routine by using the -parsecmd and -formatcmd options.
 
-The -parsecmd subroutine will be called whenever the pulldown is opened. 
-The subroutine will be called with the current content of -textvariable as 
+The -parsecmd subroutine will be called whenever the pulldown is opened.
+The subroutine will be called with the current content of -textvariable as
 the only argument. It should return a three element list: (year, month, day).
 Any undefined elements will be replaced by default values.
 
@@ -761,14 +757,14 @@ See "EXAMPLES" below.
 The default is to display the calendar the same way as the unix "cal" command
 does: Weeks begin on Sunday, and the daynames are S, M, Tu, W, Th, F, and S.
 
-However, some people prefer to start the weeks at Monday (saving both 
+However, some people prefer to start the weeks at Monday (saving both
 Saturday and Sunday to the weekEND...)  This can be achived by specifying
 -weekstart=>1. -weekstart=>0 causes the week to start at Sunday, which
 is the default. If you have a very odd schedule, you could also start the
 week at Wednesday by specifying -weekstart=>3 .....
 
-If you don't like the "cal" headings, you might specify something else 
-by using the -daynames option. 
+If you don't like the "cal" headings, you might specify something else
+by using the -daynames option.
 
 See "EXAMPLES" below.
 
@@ -796,7 +792,7 @@ A Norwegian would probably do something like this:
 	my $dateentry=$parent->DateEntry
 		(-weekstart=>1,
 		 -daynames=>[qw/Son Man Tir Ons Tor Fre Lor/],
-		 -parsecmd=>sub {  
+		 -parsecmd=>sub {
 			my ($d,$m,$y) = ($_[0] =~ m/(\d*)\/(\d*)-(\d*)/);
 			return ($y,$m,$d);
 		 },
@@ -810,7 +806,7 @@ two of the fields are present. A more sophisticated regex might be needed....
 
 =head1 CAVEATS
 
-Tk::DateEntry uses timelocal(), localtime() and strftime(). 
+Tk::DateEntry uses timelocal(), localtime() and strftime().
 These functions are based on the standard unix time representation, which
 is the number of seconds since 1/1/1970.
 
