@@ -58,6 +58,15 @@ sub Populate {
     $b->bind("<space>", [ $w => 'buttonDown' ]);
     $b->bind("<Key-Return>", [ $w => 'buttonDown' ]);
     $e->bind("<Key-Return>", [ $w => 'buttonDown' ]);
+    $e->bind("<Up>",   [$w => 'rotateDay', +1, 1] );
+    $e->bind("<Down>", [$w => 'rotateDay', -1, 1] );
+    $e->bind("<Shift-Up>",   [$w => 'rotateDay', +1, 7] );
+    $e->bind("<Shift-Down>", [$w => 'rotateDay', -1, 7] );
+    $e->bind("<Control-Up>",   [$w => 'rotateMonth', +1] );
+    $e->bind("<Control-Down>", [$w => 'rotateMonth', -1] );
+    $e->bind("<Shift-Control-Up>",   [$w => 'rotateYear', +1] );
+    $e->bind("<Shift-Control-Down>", [$w => 'rotateYear', -1] );
+
     $w->bind("<FocusOut>", sub { my $e = shift->XEvent;
 				 my $wout = sub { if (UNIVERSAL::isa($_[0],"Tk::Label")) { $_[0]->cget(-text) } else { $_[0] } };
 				 $w->popDown;
@@ -405,13 +414,18 @@ sub readContent
     }
 
     # Get todays date...
-    my ($today_m,$today_y) = (localtime)[4,5];
+    my ($today_md, $today_m,$today_y) = (localtime)[3,4,5];
     $today_y+=1900;
     $today_m++;
 
     unless (defined($month) && $month >= 1 && $month <= 12) {
 	$month = $today_m;
     }
+
+    unless (defined($day) && $day >= 1 && $day <= 31) {
+	$day = $today_md;
+    }
+
 
     $year = $today_y unless defined($year);
     if ($year < 100) {
@@ -432,8 +446,9 @@ sub readContent
 	$year = $today_y;
     }
 
+    $w->{_day}   = $day;
     $w->{_month} = $month;
-    $w->{_year} = $year;
+    $w->{_year}  = $year;
 }
 
 #--------------------------------------------------------------------
@@ -595,6 +610,61 @@ sub prevMonth
     $w->{_status} = 'new';
 }
 
+# increment or decrement the entry's day
+sub rotateDay
+{
+  my ( $w, $dir, $step ) = @_;
+
+  $w->readContent;
+  $w->{_day} += $dir * $step;
+  # depend upon timelocal() to fix up days outside of 1..31
+  $w->updateDate;
+}
+
+sub rotateMonth
+{
+  my ( $w, $dir ) = @_;
+
+  $w->readContent;
+
+  $dir > 0 ? $w->nextMonth : $w->prevMonth;
+
+  $w->updateDate;
+}
+
+sub rotateYear
+{
+  my ( $w, $dir ) = @_;
+
+  $w->readContent;
+
+  $w->{_year} += $dir;
+
+  $w->updateDate;
+}
+
+# make the entry widget track the internal notion of the date
+sub updateDate
+{
+  my ($w) = @_;
+
+  my ($d,$m,$y) = eval {
+    (localtime(timelocal(0,0,0,
+			 $w->{_day},
+			 $w->{_month}-1,
+			 $w->{_year})))[3,4,5];
+  };
+  unless ( $@ )
+  {
+    $m++;
+    $y += 1900;
+    my $e = $w->Subwidget("entry");
+    $e->delete('0','end');
+    $e->insert('end',
+	       $w->Callback(-formatcmd=>$y,$m, $d));
+  }
+}
+
 1;
 
 __END__
@@ -623,6 +693,28 @@ specified. If the variable is entry, or contains invalid data, the
 current month is displayed. If one or two digit year is specified,
 the widget tries to guess the correct century by using a "100 year
 window".
+
+The Entry widget has the following keyboard shortcuts:
+
+=over 8
+
+=item <Up>, <Down>
+
+Increase or decrease the date by one day.
+
+=item <Shift-Up>, <Shift-Down>
+
+Increase or decrease the date by one week.
+
+=item <Control-Up>, <Control-Down>
+
+Increase or decrease the date by one month.
+
+=item <Shift-Control-Up>, <Shift-Control-Down>
+
+Increase or decrease the date by one year.
+
+=back
 
 =head1 REQUIREMENTS
 
