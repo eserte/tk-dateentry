@@ -14,7 +14,7 @@ package Tk::DateEntry;
 
 use vars qw($VERSION);
 
-$VERSION = '1.32';
+$VERSION = '1.33';
 
 use Tk;
 use strict;
@@ -251,6 +251,7 @@ sub buttonDown
     # Popup the widget.
     $w->popUp;
 
+    $w->{_oldgrab} = $w->grabSave;
     $w->grabGlobal;               # Start processing......
 
     $w->readContent;             # Tries to read the current content of
@@ -518,6 +519,8 @@ sub popDown
     if ($w->{_popped}) {
 	$w->{_popped} = 0;
 	$w->grabRelease;
+	$w->{_oldgrab}->() if $w->{_oldgrab};
+	delete $w->{_oldgrab};
 	$w->{_toplevel}->withdraw;
 	$w->{_status} = 'done';
     }
