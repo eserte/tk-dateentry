@@ -14,7 +14,7 @@ package Tk::DateEntry;
 
 use vars qw($VERSION);
 
-$VERSION = '1.31';
+$VERSION = '1.32';
 
 use Tk;
 use strict;
@@ -65,7 +65,7 @@ sub Populate {
 
     # 1. Previous month:
     $w->{_backbutton}=$fr->$Button(-text=>'<<',-pady=>1,-padx=>1,-bd=>1,
-				   -command=> [\&prevMonth, $w])
+				   -command=> ['prevMonth', $w])
 	->grid(-row=>0,-column=>0);
 
     # 2. Label to put the monthname in:
@@ -73,7 +73,7 @@ sub Populate {
 
     # 3. Next month:
     $w->{_nextbutton}=$fr->$Button(-text=>'>>',-pady=>1,-padx=>1,-bd=>1,
-				   -command=>[\&nextMonth, $w])
+				   -command=>['nextMonth', $w])
 	->grid(-row=>0,-column=>6);
 
     # 4. Dayname labels:
@@ -90,7 +90,7 @@ sub Populate {
 	for my $wday (0..6) {
 	    $w->{_daybutton}->[$week]->[$wday] =
 		$fr->Button(-bd=>1, -padx=>1, -pady=>1, -text=>'00',
-			    -command => [\&selectDay, $w, $week, $wday])
+			    -command => ['selectDay', $w, $week, $wday])
 		    ->grid(-row=>$week+2,-column=>$wday,-sticky=>'nsew');
 	}
     }
@@ -115,9 +115,9 @@ sub Populate {
 	 -daynames    => [qw/PASSIVE daynames Daynames/,[qw/S M Tu W Th F S/]],
 	 -weekstart   => [qw/PASSIVE weekstart Weekstart 0/],
 	 -formatcmd   => [qw/CALLBACK formatCmd FormatCmd/,
-			  [\&defaultFormat,$w]],
+			  ['defaultFormat',$w]],
 	 -parsecmd    => [qw/CALLBACK parseCmd ParseCmd/,
-			  [\&defaultParse, $w]],
+			  ['defaultParse', $w]],
 	 -headingfmt  => [qw/PASSIVE headingFmt HeadingFmt/, '%B %Y'],
 	 -state       => [qw/METHOD state State normal/],
 	 -width       => [$e, undef, undef, 10],
