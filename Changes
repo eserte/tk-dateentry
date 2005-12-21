@@ -1,5 +1,8 @@
 Revision history for Perl extension Tk::DateEntry.
 
+1.39
+	- added Date::P/Calc support (by Christoph Lamprecht)
+
 1.38
 	- new -configcmd option
 
