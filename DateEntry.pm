@@ -1,20 +1,13 @@
 #
 # DateEntry lets the user select a date from a drop-down calendar.
 #
-# Author: Hans J. Helgesen, October 1999.
-#
-# Maintainer is now Slaven Rezic <slaven@rezic.de>
-#
-# To contact the original author:
-# <hans.helgesen@novit.no>
-#
 # See end of this file for documentation.
 #
 package Tk::DateEntry;
 
 use vars qw($VERSION);
 
-$VERSION = '1.38';
+$VERSION = '1.38_99';
 
 use Tk;
 use strict;
@@ -968,5 +961,11 @@ a 32 bit computer it doesn't support dates after 12/31/2037.
 =head1 SEE ALSO
 
 L<Tk::Entry>, L<Tk::Button>.
+
+=head1 AUTHOR
+
+Hans J. Helgesen <hans.helgesen@novit.no>, October 1999.
+
+Current maintainer is Slaven Rezic <slaven@rezic.de>.
 
 =cut
