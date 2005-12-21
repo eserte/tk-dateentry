@@ -2,6 +2,15 @@
 
 use 5.005; # new "for" syntax
 
+if (!eval q{ use Date::Calc; 1 } && !eval q{ use Date::Pcalc; 1 }) {
+    print <<EOF;
+
+*** To select dates before 1970-01-01 and after year 2036, you need to
+    install either Date::Calc or Date::Pcalc.
+
+EOF
+}
+
 use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
