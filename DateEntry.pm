@@ -870,8 +870,8 @@ the current day button. A sample callback:
 
 The callback is called after initial configuration of a day widget,
 that is, i.e. the label and the background color is already set. Note
-that day buttons XXX beibehalten XXX their configuration while
-switching between months.
+that day buttons keep their configuration while switching between
+months.
 
 =item -daynames => [qw/Sun Mon Tue Wed Thu Fri Sat/]
 
