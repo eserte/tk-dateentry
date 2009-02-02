@@ -2,5 +2,5 @@ DateEntry.pm
 MANIFEST
 Makefile.PL
 README
-test.pl
+t/dateentry.t
 Changes
