@@ -7,7 +7,7 @@ package Tk::DateEntry;
 
 use vars qw($VERSION);
 
-$VERSION = '1.38_90';
+$VERSION = '1.38_91';
 
 use Tk;
 use strict;
@@ -228,9 +228,9 @@ sub configure
     }
 
     if (defined($args{-dateformat}) &&
-	($args{-dateformat} < 1 || $args{-dateformat} > 3))
+	($args{-dateformat} < 1 || $args{-dateformat} > 4))
     {
-	carp ("-dateformat must be between 1 and 3");
+	carp ("-dateformat must be between 1 and 4");
 	delete $args{-dateformat};  # Ignore -dateformat
     }
 
@@ -481,6 +481,7 @@ sub defaultParse
     /^1$/ && (($m,$d,$y) = (split '/', $str));
     /^2$/ && (($y,$m,$d) = (split '/', $str));
     /^3$/ && (($d,$m,$y) = (split '/', $str));
+    /^4$/ && (($y,$m,$d) = (split '-', $str));
 
     return ($y,$m,$d);
 }
@@ -500,6 +501,8 @@ sub defaultFormat
 	sprintf("%04d/%02d/%02d", $y, $m, $d);
     } elsif (/^3$/) {
 	sprintf("%02d/%02d/%04d", $d, $m, $y);
+    } elsif (/^4$/) {
+	sprintf("%04d-%02d-%02d", $y, $m, $d);
     }
 }
 
@@ -812,6 +815,10 @@ Specify dateformat to use:
 
 3 = DD/MM/YYYY
 
+=item
+
+4 = YYYY-MM-DD
+
 =back
 
 See also "DATE FORMATS" below.
@@ -1008,9 +1015,12 @@ two of the fields are present. A more sophisticated regex might be needed....
 If neither L<Date::Calc> nor L<Date::Pcalc> are available, then
 Tk::DateEntry uses timelocal(), localtime() and strftime(). These
 functions are based on the standard unix time representation, which is
-the number of seconds since 1/1/1970. This means that in this case
+the number of seconds since 1970-01-01. This means that in this case
 Tk::DateEntry doesn't support dates prior to 1970, and on a 32 bit
-computer it doesn't support dates after 12/31/2037.
+computer it doesn't support dates after 2037-12-31.
+
+Future perl versions (possibly beginning with 5.10.1) will have
+support for 64 bit times.
 
 =head1 SEE ALSO
 
