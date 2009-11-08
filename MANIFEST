@@ -3,4 +3,5 @@ MANIFEST
 Makefile.PL
 README
 t/dateentry.t
+t/isodate.t
 Changes
