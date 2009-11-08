@@ -1,5 +1,11 @@
 Revision history for Perl extension Tk::DateEntry.
 
+	- new tests
+	- skip tests if MainWindow cannot be created
+
+1.38_91
+	- added new dateformat 4 (YYYY-MM-DD)
+
 1.38_90
 	- added Date::P/Calc support (by Christoph Lamprecht)
 
