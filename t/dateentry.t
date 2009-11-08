@@ -95,7 +95,11 @@ if ($ENV{BATCH}) {
 		       $de->{_backbutton}->invoke;
 		   });
 	$mw->after(700, sub {
-		       $de->{_daybutton}->[2]->[3]->invoke;
+		       if ($de->cget('-weekstart') == 1) {
+			   $de->{_daybutton}->[2]->[3]->invoke;
+		       } else {
+			   $de->{_daybutton}->[2]->[4]->invoke;
+		       }
 		   });
 	catch_grabs {
 	    $de->buttonDown;
