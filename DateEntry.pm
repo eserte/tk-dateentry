@@ -7,7 +7,7 @@ package Tk::DateEntry;
 
 use vars qw($VERSION);
 
-$VERSION = '1.38_91';
+$VERSION = '1.38_92';
 
 use Tk;
 use strict;
@@ -288,11 +288,24 @@ sub buttonDown
 	#
 	my $cal = $w->getCalendar;
 
-	my $monthlabel = (defined &strftime
-			  ? strftime($w->cget('-headingfmt'),0,0,0,1,
-				     $w->{_month}-1,$w->{_year}-1900)
-			  : $w->{_month} . "/" . $w->{_year}
-			 );
+	my $monthlabel;
+	if (defined &strftime) {
+	    $monthlabel = strftime($w->cget('-headingfmt'),0,0,0,1,
+				   $w->{_month}-1,$w->{_year}-1900);
+	    my $codeset = eval {
+		require I18N::Langinfo;
+		I18N::Langinfo::langinfo(I18N::Langinfo::CODESET());
+	    };
+	    if ($codeset) {
+		eval {
+		    require Encode;
+		    $monthlabel = Encode::decode($codeset, $monthlabel);
+		};
+		warn "Cannot decode month label in codeset '$codeset': $@" if $@;
+	    }
+	} else {
+	    $monthlabel = $w->{_month} . "/" . $w->{_year};
+	}
 	$w->{_monthlabel}->configure(-text=>$monthlabel);
 
 	for my $week (0..5) {
@@ -789,6 +802,10 @@ Tk::DateEntry requires L<Time::Local> and L<POSIX> (strftime) (and
 basic Perl/Tk of course....). For using dates before 1970-01-01 either
 L<Date::Calc> or L<Date::Pcalc> is required.
 
+Further optional requirements are L<Tk::FireButton> (better for fast
+scanning between months), L<Encode> and L<I18N::Langinfo> (for correct
+interpretation of locale charset)
+
 =head1 OPTIONS
 
 =over 4
@@ -899,8 +916,8 @@ calling strftime(format,0,0,0,1,month,year). Default format is '%B %Y'.
 Note that only month and year will have sensible values, including
 day and/or time in the heading is possible, but it makes no sense.
 
-If POSIX.pm is not available then this option has no effect and the
-month name heading format will just be "%m/%Y".
+If L<POSIX|POSIX.pm> is not available then this option has no effect
+and the month name heading format will just be "%m/%Y".
 
 =item -state => string
 

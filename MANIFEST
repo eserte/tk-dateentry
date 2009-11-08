@@ -2,6 +2,7 @@ DateEntry.pm
 MANIFEST
 Makefile.PL
 README
+t/TkTest.pm
 t/dateentry.t
 t/isodate.t
 Changes

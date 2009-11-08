@@ -1,10 +1,14 @@
 Revision history for Perl extension Tk::DateEntry.
 
-	- new tests
-	- skip tests if MainWindow cannot be created
+1.38_92
+	- fixed display of localized month names when using
+	  a non ascii/latin1 locale 
+	- test suite: protect from grab errors and other fixes
 
 1.38_91
 	- added new dateformat 4 (YYYY-MM-DD)
+	- new tests
+	- skip tests if MainWindow cannot be created
 
 1.38_90
 	- added Date::P/Calc support (by Christoph Lamprecht)
