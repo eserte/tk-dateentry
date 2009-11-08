@@ -20,6 +20,10 @@ WriteMakefile(
     'PREREQ_PM' => {Tk => 400},
     'dist'      => {'COMPRESS'=>'gzip -9f', 'SUFFIX' => '.gz',
                     'POSTOP'=>'-$(CHMOD) 644 $(DISTVNAME).tar$(SUFFIX)'},
+    ($ExtUtils::MakeMaker::VERSION >= 6.54 ?
+      (META_ADD => { resources => { repository => 'git://github.com/eserte/tk-dateentry.git' },
+		     recommends => {'Date::Calc' => 0},
+		   }) : ()),
 );
 
 sub MY::postamble {
