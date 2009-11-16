@@ -7,7 +7,7 @@ package Tk::DateEntry;
 
 use vars qw($VERSION);
 
-$VERSION = '1.38_92';
+$VERSION = '1.38_93';
 
 use Tk;
 use strict;
@@ -292,10 +292,7 @@ sub buttonDown
 	if (defined &strftime) {
 	    $monthlabel = strftime($w->cget('-headingfmt'),0,0,0,1,
 				   $w->{_month}-1,$w->{_year}-1900);
-	    my $codeset = eval {
-		require I18N::Langinfo;
-		I18N::Langinfo::langinfo(I18N::Langinfo::CODESET());
-	    };
+	    my $codeset = $w->_encoding;
 	    if ($codeset) {
 		eval {
 		    require Encode;
@@ -742,6 +739,55 @@ sub updateDateDC
     }
 }
 
+# "Stolen" from Locale::Maketext::Lexicon (called "encoding" there)
+# and slightly adapted.
+sub _encoding {
+    my $w = shift;
+    if (exists $w->{_posix_encoding}) {
+	return $w->{_posix_encoding};
+    }
+
+    local $^W;    # no warnings 'uninitialized', really.
+    my ( $country_language, $locale_encoding );
+
+    local $@;
+    eval {
+        require I18N::Langinfo;
+        $locale_encoding =
+          I18N::Langinfo::langinfo( I18N::Langinfo::CODESET() );
+      }
+      or eval {
+        require Win32::Console;
+        $locale_encoding = 'cp' . Win32::Console::OutputCP();
+      };
+    if ( !$locale_encoding ) {
+        foreach my $key (qw( LANGUAGE LC_ALL LC_MESSAGES LANG )) {
+            $ENV{$key} =~ /^([^.]+)\.([^.:]+)/ or next;
+            ( $country_language, $locale_encoding ) = ( $1, $2 );
+            last;
+        }
+    }
+    if (   defined $locale_encoding
+        && lc($locale_encoding) eq 'euc'
+        && defined $country_language )
+    {
+        if ( $country_language =~ /^ja_JP|japan(?:ese)?$/i ) {
+            $locale_encoding = 'euc-jp';
+        }
+        elsif ( $country_language =~ /^ko_KR|korean?$/i ) {
+            $locale_encoding = 'euc-kr';
+        }
+        elsif ( $country_language =~ /^zh_CN|chin(?:a|ese)?$/i ) {
+            $locale_encoding = 'euc-cn';
+        }
+        elsif ( $country_language =~ /^zh_TW|taiwan(?:ese)?$/i ) {
+            $locale_encoding = 'euc-tw';
+        }
+    }
+
+    $w->{_posix_encoding} = $locale_encoding;
+}
+
 1;
 
 __END__
@@ -803,8 +849,9 @@ basic Perl/Tk of course....). For using dates before 1970-01-01 either
 L<Date::Calc> or L<Date::Pcalc> is required.
 
 Further optional requirements are L<Tk::FireButton> (better for fast
-scanning between months), L<Encode> and L<I18N::Langinfo> (for correct
-interpretation of locale charset)
+scanning between months), L<Encode> and either L<I18N::Langinfo>
+(Unix-like systems) or L<Win32::Console>) (Windows systems) (for
+correct interpretation of locale charset)
 
 =head1 OPTIONS
 

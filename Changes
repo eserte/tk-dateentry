@@ -1,5 +1,10 @@
 Revision history for Perl extension Tk::DateEntry.
 
+1.38_93
+	- using the encoding detection logic from
+          Locale::Maketext::Lexicon which could also work on
+          non-I18N::Langinfo and Windows systems (unchecked!)
+
 1.38_92
 	- fixed display of localized month names when using
 	  a non ascii/latin1 locale 

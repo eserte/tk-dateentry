@@ -24,7 +24,7 @@ WriteMakefile(
       (META_ADD => { resources => { repository => 'git://github.com/eserte/tk-dateentry.git' },
 		     recommends => {'Date::Calc'     => 0,
 				    'Encode'	     => 0,
-				    'I18N::Langinfo' => 0,
+				    ($^O eq 'MSWin32' ? ('Win32::Console' => 0) : ('I18N::Langinfo' => 0)),
 				    'Tk::FireButton' => 0,
 				   },
 		   }) : ()),
