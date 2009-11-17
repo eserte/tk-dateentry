@@ -1002,6 +1002,10 @@ The "builtin" date formats are:
 
 -dateformat => 3       - DD/MM/YYYY
 
+=item
+
+-dateformat => 4       - YYYY-MM-DD
+
 =back
 
 Trailing fields that are missing will be replaced by the current date, if the
