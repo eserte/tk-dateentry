@@ -800,19 +800,19 @@ Tk::DateEntry - Drop down calendar widget for selecting dates.
 
 =head1 SYNOPSIS
 
-$dateentry = $parent->DateEntry (<options>);
+    $dateentry = $parent->DateEntry (<options>);
 
 =head1 DESCRIPTION
 
 Tk::DateEntry is a drop down widget for selecting dates. It looks like
 the BrowseEntry widget with an Entry followed by an arrow button, but
-in stead of displaying a Listbox the DateEntry displays a calendar
+instead of displaying a Listbox the DateEntry displays a calendar
 with buttons for each date. The calendar contains buttons for browsing
 through the months.
 
 When the drop down is opened, the widget will try to read the current
-content of the widget (the -textvariable), and display the month/year
-specified. If the variable is entry, or contains invalid data, the
+content of the widget (the B<-textvariable>), and display the month/year
+specified. If the variable is empty, or contains invalid data, then the
 current month is displayed. If one or two digit year is specified,
 the widget tries to guess the correct century by using a "100 year
 window".
@@ -857,11 +857,11 @@ correct interpretation of locale charset)
 
 =over 4
 
-=item -arrowimage => image
+=item B<-arrowimage> => I<image>
 
 Use alternative image for the arrow button.
 
-=item -dateformat => integer
+=item B<-dateformat> => I<integer>
 
 Specify dateformat to use:
 
@@ -885,56 +885,56 @@ Specify dateformat to use:
 
 =back
 
-See also "DATE FORMATS" below.
+See also L</DATE FORMATS> below.
 
-=item -parsecmd => \&callback
+=item B<-parsecmd> => I<\&callback>
 
 Instead of using one of the builtin dateformats, you can specify your
-own by supplying a subroutine for parsing (-parsecmd) and formatting
-(-formatcmd) of the date string. These options overrides -dateformat.
-See "DATE FORMATS" below.
+own by supplying a subroutine for parsing (B<-parsecmd>) and formatting
+(B<-formatcmd>) of the date string. These options overrides B<-dateformat>.
+See L</DATE FORMATS> below.
 
-=item -formatcmd => \&callback
+=item B<-formatcmd> => I<\&callback>
 
-See -parsecmd above and "DATE FORMATS" below.
+See B<-parsecmd> above and L</DATE FORMATS> below.
 
-=item -background => color
+=item B<-background> => I<color>
 
 Sets the background color for the Entry subwidget. Note that
 the dropdown calendar is not affected by this option. See also
--boxbackground, -buttonbackground and -todaybackground.
+B<-boxbackground>, B<-buttonbackground> and B<-todaybackground>.
 
-=item -buttonbackground => color
+=item B<-buttonbackground> => I<color>
 
 Sets the background color for all button in the dropdown calendar.
 
-=item -boxbackground => color
+=item B<-boxbackground> => I<color>
 
 Sets the background color for the dropdown widget (not including the buttons).
 
-=item -todaybackground => color
+=item B<-todaybackground> => I<color>
 
 Sets the background color for the button representing the current date.
 
-=item -font => font
+=item B<-font> => I<font>
 
 Sets the font for all subwidgets.
 
-=item -configcmd => \&callback
+=item B<-configcmd> => I<\&callback>
 
 Called for every day button in the calendar while month configuration.
 A hash with the keys B<-date>, B<-widget>, and B<-datewidget> is
-passed to the callback. The -date parameter is an array reference
+passed to the callback. The B<-date> parameter is an array reference
 containing day, month, and year. For empty buttons this parameter is
-undefined. The -widget parameter is a reference to the current
-Tk::DateEntry widget, and the -datewidget parameter is a reference to
+undefined. The B<-widget> parameter is a reference to the current
+Tk::DateEntry widget, and the B<-datewidget> parameter is a reference to
 the current day button. A sample callback:
 
     sub configcmd {
        my(%args) = @_;
-       my($day,$month,$year) = @{ $args{-date} };
-       my $widget = $args->{-widget};
-       my $datewidget = $args->{-datewidget};
+       my($day,$month,$year) = @{$args->{-date}};
+       my $widget            =   $args->{-widget};
+       my $datewidget        =   $args->{-datewidget};
        $datewidget->configure(...);
        ...
     }
@@ -944,34 +944,34 @@ that is, i.e. the label and the background color is already set. Note
 that day buttons keep their configuration while switching between
 months.
 
-=item -daynames => [qw/Sun Mon Tue Wed Thu Fri Sat/]
+=item B<-daynames> => [qw/Sun Mon Tue Wed Thu Fri Sat/]
 
 Specifies the daynames which is used in the calendar heading.
-The default is [qw/S M Tu W Th F S/]. Note that the array MUST begin
-with the name of Sunday, even if -weekstart specifies something else
-than 0 (which is Sunday). See also "WEEKS" below.
+The default is C<< [qw/S M Tu W Th F S/] >>. Note that the array MUST begin
+with the name of Sunday, even if B<-weekstart> specifies something else
+than 0 (which is Sunday). See also L</WEEKS> below.
 
-=item -weekstart => number
+=item B<-weekstart> => I<number>
 
 Use this if you don't want the weeks to start on Sundays. Specify a number
-between 0 (Sunday) and 6 (Saturday). See "WEEKS" below.
+between 0 (Sunday) and 6 (Saturday). See L</WEEKS> below.
 
-=item -headingfmt => string
+=item B<-headingfmt> => I<string>
 
-Format for the Month name heading. The month name heading is created by
-calling strftime(format,0,0,0,1,month,year). Default format is '%B %Y'.
+Format for the month name heading. The month name heading is created by
+calling C<< strftime(format,0,0,0,1,month,year) >>. Default format is 'C<< %B %Y >>'.
 Note that only month and year will have sensible values, including
 day and/or time in the heading is possible, but it makes no sense.
 
-If L<POSIX|POSIX.pm> is not available then this option has no effect
-and the month name heading format will just be "%m/%Y".
+If L<POSIX> is not available then this option has no effect
+and the month name heading format will just be "C<< %m/%Y >>".
 
-=item -state => string
+=item B<-state> => I<string>
 
-'normal', 'disabled' or 'readonly'. The latter forces the user to use
+'B<normal>', 'B<disabled>' or 'B<readonly>'. The latter forces the user to use
 the drop down, editing in the Entry subwidget is disabled.
 
-=item -width => number
+=item B<-width> => I<number>
 
 Width of the Entry subwidget, default is 10 (which fits the default
 date format MM/DD/YYYY).
@@ -1013,34 +1013,34 @@ year is specified by one or two digits, the widget will guess the century by
 using a "100 year window".
 
 If you're not satisified with any of these formats, you might specify your
-own parse- and format routine by using the -parsecmd and -formatcmd options.
+own parse and format routine by using the B<-parsecmd> and B<-formatcmd> options.
 
-The -parsecmd subroutine will be called whenever the pulldown is opened.
-The subroutine will be called with the current content of -textvariable as
+The B<-parsecmd> subroutine will be called whenever the pulldown is opened.
+The subroutine will be called with the current content of B<-textvariable> as
 the only argument. It should return a three element list: (year, month, day).
 Any undefined elements will be replaced by default values.
 
-The -formatcmd subroutine will be called whenever the user selects a date.
+The B<-formatcmd> subroutine will be called whenever the user selects a date.
 It will be called with three arguments: (year, month, day). It should return
-a single string which will be assigned to the -textvariable.
+a single string which will be assigned to the B<-textvariable>.
 
-See "EXAMPLES" below.
+See L</EXAMPLES> below.
 
 =head1 WEEKS
 
-The default is to display the calendar the same way as the unix "cal" command
+The default is to display the calendar the same way as the unix L<cal(1)> command
 does: Weeks begin on Sunday, and the daynames are S, M, Tu, W, Th, F, and S.
 
 However, some people prefer to start the weeks at Monday (saving both
 Saturday and Sunday to the weekEND...)  This can be achived by specifying
--weekstart=>1. -weekstart=>0 causes the week to start at Sunday, which
+C<< -weekstart=>1 >>. C<< -weekstart=>0 >> causes the week to start at Sunday, which
 is the default. If you have a very odd schedule, you could also start the
-week at Wednesday by specifying -weekstart=>3 .....
+week at Wednesday by specifying C<< -weekstart=>3 >>.....
 
 If you don't like the "cal" headings, you might specify something else
-by using the -daynames option.
+by using the B<-daynames> option.
 
-See "EXAMPLES" below.
+See L</EXAMPLES> below.
 
 =head1 EXAMPLES
 
@@ -1075,7 +1075,7 @@ A Norwegian would probably do something like this:
 		 }
 		)->pack;
 
-Note that this -parsecmd will return (undef,undef,undef) even if one or
+Note that this B<-parsecmd> will return (undef,undef,undef) even if one or
 two of the fields are present. A more sophisticated regex might be needed....
 
 =head1 CAVEATS
@@ -1092,7 +1092,7 @@ support for 64 bit times.
 
 =head1 SEE ALSO
 
-L<Tk::Entry>, L<Tk::Button>.
+L<Tk::Entry>, L<Tk::Button>, L<Tk::ChooseDate>.
 
 =head1 AUTHOR
 
