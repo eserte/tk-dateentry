@@ -810,7 +810,7 @@ sub _bidify {
     my(undef, $string) = @_;
     return if !defined $string;
     eval {
-	if ($string =~ m{\p{BidiClass:R}}) {
+	if ($string =~ m{[\p{BidiClass:R}\p{BidiClass:AL}\p{BidiClass:RLE}\p{BidiClass:RLO}]}) {
 	    require Text::Bidi;
 	    $string = Text::Bidi::log2vis($string);
 	}
