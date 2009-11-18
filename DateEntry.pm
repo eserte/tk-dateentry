@@ -129,7 +129,6 @@ sub Populate {
                       => [qw/PASSIVE todayBackground TodayBackground/],
 	 -font        => [qw/DESCENDANTS font Font/],
 	 -daynames    => [qw/PASSIVE daynames Daynames/,[qw/S M Tu W Th F S/]],
-	 -locdaynames => [qw/PASSIVE locdaynames LocDaynames/, 0],
 	 -weekstart   => [qw/PASSIVE weekstart Weekstart 0/],
 	 -formatcmd   => [qw/CALLBACK formatCmd FormatCmd/,
 			  ['defaultFormat',$w]],
@@ -238,11 +237,11 @@ sub configure
 
     $w->SUPER::configure(%args);
 
-    if (defined($args{-daynames}) || defined($args{-weekstart}) || $args{-locdaynames}) {
+    if (defined($args{-daynames}) || defined($args{-weekstart})) {
 	# Refresh the daynames heading whenever -daynames or -weekstart
 	# changes.
 	my $daynames;
-	if ($args{-locdaynames} && defined &strftime) { # this option has precedence over daynames
+	if ($args{-daynames} && $args{-daynames} eq 'locale' && defined &strftime) {
 	    foreach (0..6) {
 		push @$daynames, $w->_decode_posix_bytes(strftime("%a",0,0,0,1,1,1,$_));
 	    }
