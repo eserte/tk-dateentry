@@ -5,7 +5,7 @@
 #
 package Tk::DateEntry;
 
-use vars qw($VERSION);
+use vars qw($VERSION $DEBUG);
 
 $VERSION = '1.38_93';
 
@@ -129,6 +129,7 @@ sub Populate {
                       => [qw/PASSIVE todayBackground TodayBackground/],
 	 -font        => [qw/DESCENDANTS font Font/],
 	 -daynames    => [qw/PASSIVE daynames Daynames/,[qw/S M Tu W Th F S/]],
+	 -locdaynames => [qw/PASSIVE locdaynames LocDaynames/, 0],
 	 -weekstart   => [qw/PASSIVE weekstart Weekstart 0/],
 	 -formatcmd   => [qw/CALLBACK formatCmd FormatCmd/,
 			  ['defaultFormat',$w]],
@@ -237,15 +238,24 @@ sub configure
 
     $w->SUPER::configure(%args);
 
-    if (defined($args{-daynames}) || defined($args{-weekstart})) {
+    if (defined($args{-daynames}) || defined($args{-weekstart}) || $args{-locdaynames}) {
 	# Refresh the daynames heading whenever -daynames or -weekstart
 	# changes.
-	my $daynames = $w->cget('-daynames');
+	my $daynames;
+	if ($args{-locdaynames} && defined &strftime) { # this option has precedence over daynames
+	    foreach (0..6) {
+		push @$daynames, $w->_decode_posix_bytes(strftime("%a",0,0,0,1,1,1,$_));
+	    }
+	} else {
+	    $daynames = $w->cget('-daynames');
+	}
 	my $weekstart = $w->cget('-weekstart');
 
 	for (0..6) {
+	    my $dayname = $daynames->[($_ + $weekstart)%7];
+	    $dayname = $w->_bidify($dayname);
 	    $w->{_daylabel}->[$_]->configure
-		(-text => $daynames->[($_ + $weekstart)%7]);
+		(-text => $dayname);
 	}
     }
 }
@@ -292,17 +302,11 @@ sub buttonDown
 	if (defined &strftime) {
 	    $monthlabel = strftime($w->cget('-headingfmt'),0,0,0,1,
 				   $w->{_month}-1,$w->{_year}-1900);
-	    my $codeset = $w->_posix_encoding;
-	    if ($codeset) {
-		eval {
-		    require Encode;
-		    $monthlabel = Encode::decode($codeset, $monthlabel);
-		};
-		warn "Cannot decode month label in codeset '$codeset': $@" if $@;
-	    }
+	    $monthlabel = $w->_decode_posix_bytes($monthlabel);
 	} else {
 	    $monthlabel = $w->{_month} . "/" . $w->{_year};
 	}
+	$monthlabel = $w->_bidify($monthlabel);
 	$w->{_monthlabel}->configure(-text=>$monthlabel);
 
 	for my $week (0..5) {
@@ -788,6 +792,32 @@ sub _posix_encoding {
     }
 
     $w->{_posix_encoding} = $locale_encoding;
+}
+
+sub _decode_posix_bytes {
+    my($w, $string) = @_;
+    my $codeset = $w->_posix_encoding;
+    if ($codeset) {
+	eval {
+	    require Encode;
+	    $string = Encode::decode($codeset, $string);
+	};
+	warn "Cannot decode string '$string' in codeset '$codeset': $@" if $@;
+    }
+    $string;
+}
+
+sub _bidify {
+    my(undef, $string) = @_;
+    return if !defined $string;
+    eval {
+	if ($string =~ m{\p{BidiClass:R}}) {
+	    require Text::Bidi;
+	    $string = Text::Bidi::log2vis($string);
+	}
+    };
+    warn "Cannot align right-to-left text. $@" if $@ && $DEBUG;
+    $string;
 }
 
 1;
