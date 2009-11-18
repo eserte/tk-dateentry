@@ -292,7 +292,7 @@ sub buttonDown
 	if (defined &strftime) {
 	    $monthlabel = strftime($w->cget('-headingfmt'),0,0,0,1,
 				   $w->{_month}-1,$w->{_year}-1900);
-	    my $codeset = $w->_encoding;
+	    my $codeset = $w->_posix_encoding;
 	    if ($codeset) {
 		eval {
 		    require Encode;
@@ -741,7 +741,7 @@ sub updateDateDC
 
 # "Stolen" from Locale::Maketext::Lexicon (called "encoding" there)
 # and slightly adapted.
-sub _encoding {
+sub _posix_encoding {
     my $w = shift;
     if (exists $w->{_posix_encoding}) {
 	return $w->{_posix_encoding};
@@ -757,8 +757,10 @@ sub _encoding {
           I18N::Langinfo::langinfo( I18N::Langinfo::CODESET() );
       }
       or eval {
-        require Win32::Console;
-        $locale_encoding = 'cp' . Win32::Console::OutputCP();
+        require Win32::OLE::NLS;
+	my $lcid = Win32::OLE::NLS::GetSystemDefaultLCID();
+        $locale_encoding = Win32::OLE::NLS::GetLocaleInfo($lcid, Win32::OLE::NLS::LOCALE_IDEFAULTANSICODEPAGE()); # XXX this is unchecked!
+	$locale_encoding = 'cp' . $locale_encoding if $locale_encoding;
       };
     if ( !$locale_encoding ) {
         foreach my $key (qw( LANGUAGE LC_ALL LC_MESSAGES LANG )) {
