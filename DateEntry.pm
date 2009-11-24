@@ -879,10 +879,24 @@ Tk::DateEntry requires L<Time::Local> and L<POSIX> (strftime) (and
 basic Perl/Tk of course....). For using dates before 1970-01-01 either
 L<Date::Calc> or L<Date::Pcalc> is required.
 
-Further optional requirements are L<Tk::FireButton> (better for fast
-scanning between months), L<Encode> and either L<I18N::Langinfo>
-(Unix-like systems) or L<Win32::Console>) (Windows systems) (for
-correct interpretation of locale charset)
+For faster scanning between months the optional requirement
+L<Tk::FireButton> is needed. For localized day and month names the
+following modules are needed:
+
+=over
+
+=item L<Encode> (for non-ASCII encodings)
+
+=item L<I18N::Langinfo> (Unix-like systems only, for detection of
+current locale)
+
+=item L<Win32::OLE::NLS> (Windows only, for detection of current
+locale)
+
+=item L<Text::Bidi> (only if support for right-to-left scripts
+(Hebrew, Arabic) is needed)
+
+=back
 
 =head1 OPTIONS
 
@@ -1127,6 +1141,11 @@ computer it doesn't support dates after 2037-12-31.
 
 Future perl versions (possibly beginning with 5.10.1) will have
 support for 64 bit times.
+
+=head1 TODO
+
+Use L<DateTime::Locale> instead of L<POSIX> for localized day and
+month names.
 
 =head1 SEE ALSO
 
