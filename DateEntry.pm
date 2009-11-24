@@ -7,7 +7,7 @@ package Tk::DateEntry;
 
 use vars qw($VERSION $DEBUG);
 
-$VERSION = '1.38_93';
+$VERSION = '1.38_94';
 
 use Tk;
 use strict;
@@ -982,6 +982,9 @@ The default is C<< [qw/S M Tu W Th F S/] >>. Note that the array MUST begin
 with the name of Sunday, even if B<-weekstart> specifies something else
 than 0 (which is Sunday). See also L</WEEKS> below.
 
+It is also possible to use the special value C<locale> to use the
+daynames from the current locale.
+
 =item B<-weekstart> => I<number>
 
 Use this if you don't want the weeks to start on Sundays. Specify a number
@@ -1082,6 +1085,10 @@ See L</EXAMPLES> below.
 =head2 Other daynames:
 
 If you want the "locale's abbreviated weekday name" you do it like this:
+
+	$parent->DateEntry(-daynames=>'locale')->pack;
+
+which is short for:
 
 	use POSIX qw/strftime/;
 	my @daynames=();
