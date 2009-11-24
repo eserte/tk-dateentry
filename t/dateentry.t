@@ -15,6 +15,7 @@ BEGIN {
     }
 }
 
+use Getopt::Long;
 use Tk;
 use TkTest qw(catch_grabs);
 
@@ -30,6 +31,8 @@ plan tests => 2 + $dc_tests;
 require_ok('Tk::DateEntry');
 
 if (!defined $ENV{BATCH}) { $ENV{BATCH} = 1 }
+GetOptions("demo" => sub { $ENV{BATCH} = 0 })
+    or die "usage: $0 [-demo]";
 
 my $can_date_calc = eval q{ use Date::Calc; 1 } || eval q{ use Date::Pcalc; 1 };
 
@@ -38,7 +41,8 @@ my @extra_args;
 if ((defined $ENV{LC_ALL} && $ENV{LC_ALL} =~ /^de/) ||
     (defined $ENV{LANG}   && $ENV{LANG}   =~ /^de/)) {
     @extra_args = (-weekstart => 1,
-		   -daynames => [qw/So Mo Di Mi Do Fr Sa/],
+		   #-daynames => [qw/So Mo Di Mi Do Fr Sa/],
+		   -daynames => 'locale',
 		   -parsecmd => sub {
 		       my($d,$m,$y) = ($_[0] =~ m/(\d*)\.(\d*)\.(\d*)/);
 		       return ($y,$m,$d);
