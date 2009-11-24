@@ -24,7 +24,8 @@ WriteMakefile(
       (META_ADD => { resources => { repository => 'git://github.com/eserte/tk-dateentry.git' },
 		     recommends => {'Date::Calc'     => 0,
 				    'Encode'	     => 0,
-				    ($^O eq 'MSWin32' ? ('Win32::Console' => 0) : ('I18N::Langinfo' => 0)),
+				    ($^O eq 'MSWin32' ? ('Win32::OLE::NLS' => 0) : ('I18N::Langinfo' => 0)),
+				    'Text::Bidi'     => 0,
 				    'Tk::FireButton' => 0,
 				   },
 		   }) : ()),
@@ -32,6 +33,12 @@ WriteMakefile(
 
 sub MY::postamble {
     my $postamble = "";
+
+    $postamble .= <<'EOF';
+demo :: pure_all
+	$(FULLPERL) -w -Mblib t/dateentry.t -demo
+
+EOF
 
     if (defined $ENV{USER} && $ENV{USER} eq 'eserte' && $^O =~ /bsd/i && -f "../../perl.release.mk") {
 	$postamble .= <<'EOF';
