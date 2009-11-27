@@ -1,5 +1,8 @@
 Revision history for Perl extension Tk::DateEntry.
 
+1.39
+	- no changes to previous development version
+
 1.38_94
 	- localized monthnames now work also on Windows systems
 	- new option -dayname (with test and documentation)
