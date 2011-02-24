@@ -11,6 +11,18 @@ if (!eval q{ use Date::Calc; 1 } && !eval q{ use Date::Pcalc; 1 }) {
 EOF
 }
 
+my $eumm_recent_enough = $ExtUtils::MakeMaker::VERSION >= 6.54;
+
+if (!$eumm_recent_enough) {
+    *MY::dist_core = sub {
+	<<'EOF';
+dist :
+	$(NOECHO) $(ECHO) "Sorry, use a newer EUMM!"
+
+EOF
+    };
+}
+
 use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
@@ -20,7 +32,7 @@ WriteMakefile(
     'PREREQ_PM' => {Tk => 400},
     'dist'      => {'COMPRESS'=>'gzip -9f', 'SUFFIX' => '.gz',
                     'POSTOP'=>'-$(CHMOD) 644 $(DISTVNAME).tar$(SUFFIX)'},
-    ($ExtUtils::MakeMaker::VERSION >= 6.54 ?
+    ($eumm_recent_enough ?
       (META_ADD => { resources => { repository => 'git://github.com/eserte/tk-dateentry.git' },
 		     recommends => {'Date::Calc'     => 0,
 				    'Encode'	     => 0,
