@@ -3,10 +3,12 @@
 use 5.005; # new "for" syntax
 
 if (!eval q{ use Date::Calc; 1 } && !eval q{ use Date::Pcalc; 1 }) {
+    # It's possible to install Date::Calc without the XS parts, so
+    # there's no need to advertize Date::Pcalc anymore.
     print <<EOF;
 
 *** To select dates before 1970-01-01 and after year 2036, you need to
-    install either Date::Calc or Date::Pcalc.
+    install Date::Calc.
 
 EOF
 }
