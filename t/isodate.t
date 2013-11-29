@@ -28,6 +28,7 @@ if (!$mw) {
     print "1..0 # skip: cannot create MainWindow: $@";
     exit;
 }
+$mw->geometry('+1+1');
 
 plan tests => 5;
 

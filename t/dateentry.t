@@ -24,6 +24,7 @@ if (!$mw) {
     print "1..0 # skip: cannot create MainWindow: $@";
     exit;
 }
+$mw->geometry('+1+1');
 
 my $dc_tests = 3;
 plan tests => 2 + $dc_tests;
