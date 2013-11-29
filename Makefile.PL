@@ -57,6 +57,8 @@ EOF
     if (defined $ENV{USER} && $ENV{USER} eq 'eserte' && $^O =~ /bsd/i && -f "../../perl.release.mk") {
 	$postamble .= <<'EOF';
 
+PERL_TEST_DISTRIBUTION_OPTS=not podcover
+
 .include "../../perl.release.mk"
 .include "../../perl.cvs.mk"
 
