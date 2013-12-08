@@ -1,5 +1,9 @@
 Revision history for Perl extension Tk::DateEntry.
 
+1.40
+	- no code changes, just distribution-handling fixes and
+	  improvements
+
 1.39
 	- no changes to previous development version
 
