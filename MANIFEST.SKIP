@@ -1,0 +1,9 @@
+Tk-DateEntry-.*\.tar\.gz$
+Makefile
+Makefile.old
+^blib
+pm_to_blib
+^\.git($|/)
+^\.gitignore$
+^MYMETA\.
+^\.travis\.yml$

@@ -1,5 +1,6 @@
 DateEntry.pm
 MANIFEST
+MANIFEST.SKIP
 Makefile.PL
 README
 t/TkTest.pm
