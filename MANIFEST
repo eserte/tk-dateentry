@@ -1,9 +1,10 @@
+Changes
 DateEntry.pm
 MANIFEST
 MANIFEST.SKIP
-Makefile.PL
 README
-t/TkTest.pm
 t/dateentry.t
+t/decode_posix_bytes.t
 t/isodate.t
-Changes
+t/locale_daynames.t
+t/TkTest.pm
