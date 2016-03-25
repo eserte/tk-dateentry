@@ -2,6 +2,7 @@ Revision history for Perl extension Tk::DateEntry.
 
 1.41
 	- no need to call _decode_posix_bytes in newer perls (>=5.22)
+	- fix _get_locale_daynames
 
 1.40
 	- no code changes, just distribution-handling fixes and

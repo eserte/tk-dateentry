@@ -242,9 +242,7 @@ sub configure
 	# changes.
 	my $daynames;
 	if ($args{-daynames} && $args{-daynames} eq 'locale' && defined &strftime) {
-	    foreach (0..6) {
-		push @$daynames, $w->_decode_posix_bytes(strftime("%a",0,0,0,1,1,1,$_));
-	    }
+	    $daynames = [ $w->_get_locale_daynames ];
 	} else {
 	    $daynames = $w->cget('-daynames');
 	}
@@ -740,6 +738,17 @@ sub updateDateDC
 	$e->insert('end',
 		   $w->Callback(-formatcmd=>$y,$m, $d));
     }
+}
+
+sub _get_locale_daynames {
+    my($w) = @_;
+    my @daynames;
+    my @l = (0,0,0,1,1,106,0);
+    for (0..6) {
+	$daynames[$l[6]] = $w->_decode_posix_bytes(strftime('%a', @l));
+	$l[3]++; $l[6]++;
+    }
+    @daynames;
 }
 
 # "Stolen" from Locale::Maketext::Lexicon (called "encoding" there)
