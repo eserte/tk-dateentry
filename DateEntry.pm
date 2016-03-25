@@ -7,7 +7,7 @@ package Tk::DateEntry;
 
 use vars qw($VERSION $DEBUG);
 
-$VERSION = '1.40';
+$VERSION = '1.41';
 
 use Tk;
 use strict;
@@ -795,13 +795,15 @@ sub _posix_encoding {
 
 sub _decode_posix_bytes {
     my($w, $string) = @_;
-    my $codeset = $w->_posix_encoding;
-    if ($codeset) {
-	eval {
-	    require Encode;
-	    $string = Encode::decode($codeset, $string);
-	};
-	warn "Cannot decode string '$string' in codeset '$codeset': $@" if $@;
+    if ($] < 5.022) {
+	my $codeset = $w->_posix_encoding;
+	if ($codeset) {
+	    eval {
+		require Encode;
+		$string = Encode::decode($codeset, $string);
+	    };
+	    warn "Cannot decode string '$string' in codeset '$codeset': $@" if $@;
+	}
     }
     $string;
 }
