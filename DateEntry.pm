@@ -743,7 +743,7 @@ sub updateDateDC
 sub _get_locale_daynames {
     my($w) = @_;
     my @daynames;
-    my @l = (0,0,0,1,1,106,0);
+    my @l = (0,0,0,1,1-1,106,0);
     for (0..6) {
 	$daynames[$l[6]] = $w->_decode_posix_bytes(strftime('%a', @l));
 	$l[3]++; $l[6]++;
