@@ -22,6 +22,7 @@ my $w = $mw->DateEntry;
 my @daynames = $w->_get_locale_daynames;
 is scalar(@daynames), 7;
 SKIP: {
+    no warnings 'uninitialized';
     skip 'accurate check only with de, en, or C locale', 1
 	if $ENV{LC_ALL} !~ m{^(de|en|C)};
     if      ($ENV{LC_ALL} =~ m{^de}) {
