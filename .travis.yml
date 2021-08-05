@@ -1,24 +1,34 @@
 language: perl
+arch:
+  - arm64
 matrix:
   include:
-    - perl: "5.30"
-      dist: xenial
-    - perl: "5.22"
-      dist: xenial
-    - perl: "5.20"
-      dist: trusty
-    - perl: "5.18"
-      dist: trusty
-    - perl: "5.16"
-      dist: trusty
-    - perl: "5.14"
-      dist: trusty
-    - perl: "5.12"
-      dist: trusty
-    - perl: "5.10"
-      dist: trusty
-    - perl: "5.8"
-      dist: trusty
+    - dist: xenial
+      perl: 5.24
+    - dist: bionic
+      perl: 5.26
+    - dist: focal
+      perl: 5.32
+#matrix:
+#  include:
+#    - perl: "5.30"
+#      dist: xenial
+#    - perl: "5.22"
+#      dist: xenial
+#    - perl: "5.20"
+#      dist: trusty
+#    - perl: "5.18"
+#      dist: trusty
+#    - perl: "5.16"
+#      dist: trusty
+#    - perl: "5.14"
+#      dist: trusty
+#    - perl: "5.12"
+#      dist: trusty
+#    - perl: "5.10"
+#      dist: trusty
+#    - perl: "5.8"
+#      dist: trusty
 
 env:
  - DISPLAY=:123
@@ -31,3 +41,5 @@ before_install:
 branches:
  except:
   - /appveyor/
+  - /github-actions/
+  - /doozer/
